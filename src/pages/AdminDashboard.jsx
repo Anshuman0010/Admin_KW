@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { FiUsers, FiBook, FiSettings, FiLogOut, FiGrid } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import AlumniManagement from '../components/AlumniManagement';
+import LoadingScreen from '../components/LoadingScreen';
+import PageTransition from '../components/PageTransition';
 
 const DashboardContainer = styled.div`
   min-height: 100vh;
@@ -82,12 +84,18 @@ const MainContent = styled.div`
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('alumni');
+  const [loading, setLoading] = useState(true);
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
     localStorage.removeItem('adminData');
     navigate('/admin/login');
   };
+
+  useEffect(() => {
+    // Simulate loading time
+    setTimeout(() => setLoading(false), 1000);
+  }, []);
 
   const renderContent = () => {
     switch (activeSection) {
@@ -105,65 +113,68 @@ const AdminDashboard = () => {
   };
 
   return (
-    <DashboardContainer>
-      <Sidebar>
-        <Logo>KIITWALLAH Admin</Logo>
-        
-        <MenuItem
-          active={activeSection === 'alumni'}
-          onClick={() => setActiveSection('alumni')}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          <FiGrid />
-          Alumni Nexus
-        </MenuItem>
+    <PageTransition isLoading={loading}>
+      <LoadingScreen message="Loading dashboard" />
+      <DashboardContainer>
+        <Sidebar>
+          <Logo>KIITWALLAH Admin</Logo>
+          
+          <MenuItem
+            active={activeSection === 'alumni'}
+            onClick={() => setActiveSection('alumni')}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <FiGrid />
+            Alumni Nexus
+          </MenuItem>
 
-        <MenuItem
-          active={activeSection === 'users'}
-          onClick={() => setActiveSection('users')}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          <FiUsers />
-          Users
-        </MenuItem>
+          <MenuItem
+            active={activeSection === 'users'}
+            onClick={() => setActiveSection('users')}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <FiUsers />
+            Users
+          </MenuItem>
 
-        <MenuItem
-          active={activeSection === 'resources'}
-          onClick={() => setActiveSection('resources')}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          <FiBook />
-          Resources
-        </MenuItem>
+          <MenuItem
+            active={activeSection === 'resources'}
+            onClick={() => setActiveSection('resources')}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <FiBook />
+            Resources
+          </MenuItem>
 
-        <MenuItem
-          active={activeSection === 'settings'}
-          onClick={() => setActiveSection('settings')}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          <FiSettings />
-          Settings
-        </MenuItem>
+          <MenuItem
+            active={activeSection === 'settings'}
+            onClick={() => setActiveSection('settings')}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <FiSettings />
+            Settings
+          </MenuItem>
 
-        <MenuItem
-          onClick={handleLogout}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          style={{ marginTop: 'auto' }}
-        >
-          <FiLogOut />
-          Logout
-        </MenuItem>
-      </Sidebar>
+          <MenuItem
+            onClick={handleLogout}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            style={{ marginTop: 'auto' }}
+          >
+            <FiLogOut />
+            Logout
+          </MenuItem>
+        </Sidebar>
 
-      <MainContent>
-        {renderContent()}
-      </MainContent>
-    </DashboardContainer>
+        <MainContent>
+          {renderContent()}
+        </MainContent>
+      </DashboardContainer>
+    </PageTransition>
   );
 };
 
